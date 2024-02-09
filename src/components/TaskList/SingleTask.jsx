@@ -8,15 +8,21 @@ const SingleTask = ({ todo }) => {
         [ ]
         <div className={styles.texts}>
           <p
-            className={`${styles.todoText} ${
+            className={`${styles.todoText}  ${
               todo.status === "complete" && styles["todoText--completed"]
             }`}
           >
             {todo.title}
           </p>
-          <p>{todo.status}</p>
+        </div>
+        <div className={styles.texts}>
+          <p className={`${styles.todoText}`}>{todo.status}</p>
+        </div>
+        <div className={styles.texts}>
           <p
-            className={`${todo.priority === "low" && styles["todoText--low"]}
+            className={`${styles.todoText} ${
+              todo.priority === "low" && styles["todoText--low"]
+            }
                 ${todo.priority === "medium" && styles["todoText--medium"]}
                 ${todo.priority === "high" && styles["todoText--high"]}`}
           >
