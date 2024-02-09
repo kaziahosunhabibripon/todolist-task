@@ -9,8 +9,8 @@ const Task = () => {
   return (
     <div>
       {sortedTodoList && sortedTodoList.length > 0
-        ? sortedTodoList.map((todo, index) => {
-            return <SingleTask key={index} todo={todo} />;
+        ? sortedTodoList.map((todo, id) => {
+            return <SingleTask key={id} todo={todo} />;
           })
         : "no to do found"}
     </div>

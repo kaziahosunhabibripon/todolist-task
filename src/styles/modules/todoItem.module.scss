@@ -56,6 +56,17 @@
     text-decoration: line-through;
     opacity: 0.7;
   }
+  &--low {
+    color: rgba(0, 115, 128, 0.924);
+  }
+
+  &--medium {
+    color: purple;
+  }
+
+  &--high {
+    color: rgba(255, 0, 0, 0.685);
+  }
 }
 .time {
   display: block;
