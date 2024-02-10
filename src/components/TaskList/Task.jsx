@@ -1,27 +1,21 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import SingleTask from "./SingleTask";
 import styles from "../../styles/modules/app.module.scss";
+import style from "../../styles/modules/button.module.scss";
 import { motion, AnimatePresence } from "framer-motion";
+import { updateFilterPriority } from "../../Redux/slices/todoSlice";
 const Task = () => {
   const todoList = useSelector(state => state.todo.todoList);
-
-  const filterStatus = useSelector(state => state.todo.filterStatus);
   const filterPriority = useSelector(state => state.todo.filterPriority);
-  const sortedTodoList = [...todoList];
-  sortedTodoList.sort((a, b) => new Date(b.time) - new Date(a.time));
 
-  const filteredTodoList = sortedTodoList.filter(item => {
-    if (filterStatus === "all") {
-      return true;
-    }
-
-    return item.status === filterStatus;
-  });
-
-  const filteredPriorityList = sortedTodoList.filter(item => {
+  const dispatch = useDispatch();
+  const updatePriority = e => {
+    dispatch(updateFilterPriority(e.target.value));
+  };
+  const filteredPriorityList = todoList.filter(item => {
     if (filterPriority === "low") {
-      return true;
+      return item.priority === "low";
     }
     return item.priority === filterPriority;
   });
@@ -53,9 +47,20 @@ const Task = () => {
         <h1>Count {todoList.length}</h1>
         <h1>Completed out of {todoList.length}</h1>
       </div>
+      <select
+        value={filterPriority}
+        onChange={updatePriority}
+        className={`${style.button} ${style["button__select"]}`}
+        style={{ marginBottom: "10px", display: "block" }}
+      >
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+
       <AnimatePresence>
-        {filteredTodoList && filteredTodoList.length > 0 ? (
-          filteredTodoList.map((todo, id) => {
+        {filteredPriorityList && filteredPriorityList.length > 0 ? (
+          filteredPriorityList.map((todo, id) => {
             return <SingleTask key={id} todo={todo} />;
           })
         ) : (
@@ -64,11 +69,6 @@ const Task = () => {
           </motion.p>
         )}
       </AnimatePresence>
-      {/* {filteredPriorityList && filteredPriorityList.length > 0
-        ? filteredPriorityList.map((todo, id) => {
-            return <SingleTask key={id} todo={todo} />;
-          })
-        : "no to do found"} */}
     </motion.div>
   );
 };
