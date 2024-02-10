@@ -8,6 +8,7 @@ import { deleteTodo, updateTodo } from "../../Redux/slices/todoSlice";
 import toast from "react-hot-toast";
 import TodoModal from "../Modal/TodoModal";
 import CheckButton from "../Button/CheckButton";
+import { motion } from "framer-motion";
 const SingleTask = ({ todo }) => {
   const dispatch = useDispatch();
   const [checked, setChecked] = useState(false);
@@ -36,9 +37,16 @@ const SingleTask = ({ todo }) => {
       })
     );
   };
+  const child = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+    },
+  };
   return (
     <>
-      <div className={styles.item}>
+      <motion.div variants={child} className={styles.item}>
         <div className={styles.todoDetails}>
           <CheckButton checked={checked} handleCheck={handleCheck} />
           <div className={styles.texts}>
@@ -88,7 +96,7 @@ const SingleTask = ({ todo }) => {
             <MdDelete />
           </div>
         </div>
-      </div>
+      </motion.div>
       <TodoModal
         type="Update"
         todo={todo}
