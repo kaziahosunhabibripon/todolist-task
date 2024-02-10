@@ -39,7 +39,7 @@ const Task = () => {
       }
       return true;
     });
-
+  const completedItems = todoList.filter(item => item.status === "complete");
   const container = {
     hidden: { opacity: 1 },
     visible: {
@@ -66,7 +66,9 @@ const Task = () => {
     >
       <div className={styles.count__title}>
         <h1>Count {todoList.length}</h1>
-        <h1>Completed out of {todoList.length}</h1>
+        <h1>
+          Completed {completedItems.length} out of {todoList.length}
+        </h1>
       </div>
       <div
         style={{
