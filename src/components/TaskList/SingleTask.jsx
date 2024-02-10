@@ -1,14 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../../styles/modules/todoItem.module.scss";
 import { format } from "date-fns";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { useDispatch } from "react-redux";
-import { deleteTodo } from "../../Redux/slices/todoSlice";
+import { deleteTodo, updateTodo } from "../../Redux/slices/todoSlice";
 import toast from "react-hot-toast";
 import TodoModal from "../Modal/TodoModal";
+import CheckButton from "../Button/CheckButton";
 const SingleTask = ({ todo }) => {
   const dispatch = useDispatch();
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    if (todo.status === "complete") {
+      setChecked(true);
+    } else {
+      setChecked(false);
+    }
+  }, [todo.status]);
   const [updateModal, setUpdateModal] = useState(false);
   const handleUpdate = () => {
     setUpdateModal(true);
@@ -17,11 +27,20 @@ const SingleTask = ({ todo }) => {
     dispatch(deleteTodo(todo.id));
     toast.success("todo deleted successfully");
   };
+  const handleCheck = () => {
+    setChecked(!checked);
+    dispatch(
+      updateTodo({
+        ...todo,
+        status: checked ? "incomplete" : "complete",
+      })
+    );
+  };
   return (
     <>
       <div className={styles.item}>
         <div className={styles.todoDetails}>
-          [ ]
+          <CheckButton checked={checked} handleCheck={handleCheck} />
           <div className={styles.texts}>
             <p
               className={`${styles.todoText}  ${
@@ -29,10 +48,6 @@ const SingleTask = ({ todo }) => {
               }`}
             >
               {todo.title}
-            </p>
-
-            <p className={styles.time}>
-              {format(new Date(todo.time), "p, MM/dd/yyyy")}
             </p>
           </div>
           <div className={styles.texts}>
@@ -48,6 +63,11 @@ const SingleTask = ({ todo }) => {
             >
               {todo.priority}
             </p>
+          </div>
+          <div className={styles.texts}>
+            <h1 className={styles.time}>
+              {format(new Date(todo.time), "p, MM/dd/yyyy")}
+            </h1>
           </div>
         </div>
         <div className={styles.todoActions}>
