@@ -4,21 +4,42 @@ import SingleTask from "./SingleTask";
 import styles from "../../styles/modules/app.module.scss";
 import style from "../../styles/modules/button.module.scss";
 import { motion, AnimatePresence } from "framer-motion";
-import { updateFilterPriority } from "../../Redux/slices/todoSlice";
+import {
+  updateFilterPriority,
+  updateFilterStatus,
+} from "../../Redux/slices/todoSlice";
 const Task = () => {
   const todoList = useSelector(state => state.todo.todoList);
   const filterPriority = useSelector(state => state.todo.filterPriority);
+  const filterStatus = useSelector(state => state.todo.filterStatus);
 
   const dispatch = useDispatch();
+  const updateStatus = status => {
+    dispatch(updateFilterStatus(status));
+  };
   const updatePriority = e => {
     dispatch(updateFilterPriority(e.target.value));
   };
-  const filteredPriorityList = todoList.filter(item => {
-    if (filterPriority === "low") {
-      return item.priority === "low";
-    }
-    return item.priority === filterPriority;
-  });
+  const filteredPriorityList = todoList
+    .filter(item => {
+      if (filterPriority === "all") {
+        return true;
+      }
+      if (filterPriority === "low") {
+        return item.priority === "low";
+      }
+      return item.priority === filterPriority;
+    })
+    .filter(item => {
+      if (filterStatus === "complete") {
+        return item.status === "complete";
+      }
+      if (filterStatus === "incomplete") {
+        return item.status === "incomplete";
+      }
+      return true;
+    });
+
   const container = {
     hidden: { opacity: 1 },
     visible: {
@@ -47,17 +68,42 @@ const Task = () => {
         <h1>Count {todoList.length}</h1>
         <h1>Completed out of {todoList.length}</h1>
       </div>
-      <select
-        value={filterPriority}
-        onChange={updatePriority}
-        className={`${style.button} ${style["button__select"]}`}
-        style={{ marginBottom: "10px", display: "block" }}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: "10px",
+          justifyContent: "space-between",
+          marginBottom: "20px",
+        }}
       >
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-      </select>
-
+        <select
+          value={filterPriority}
+          onChange={updatePriority}
+          className={`${style.button} ${style["button__select"]}`}
+          style={{ marginBottom: "10px", display: "block" }}
+        >
+          <option value="all">All</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+        <button
+          className={`${style.button} ${style["button--primary"]}`}
+          value="complete"
+          onClick={() => updateStatus("complete")}
+        >
+          Complete
+        </button>
+        <button
+          className={style.button}
+          style={{ backgroundColor: "tomato", color: "white" }}
+          value="incomplete"
+          onClick={() => updateStatus("incomplete")}
+        >
+          Incomplete
+        </button>
+      </div>
       <AnimatePresence>
         {filteredPriorityList && filteredPriorityList.length > 0 ? (
           filteredPriorityList.map((todo, id) => {
