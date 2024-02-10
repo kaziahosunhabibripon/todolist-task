@@ -36,6 +36,7 @@ const TaskTitle = () => {
           Add Task
         </button>
         {/* status section */}
+
         <select
           id="status"
           value={filterStatus}

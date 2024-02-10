@@ -15,6 +15,7 @@ const Task = () => {
     if (filterStatus === "all") {
       return true;
     }
+
     return item.status === filterStatus;
   });
 
@@ -48,6 +49,10 @@ const Task = () => {
       initial="hidden"
       className={styles.content__wrapper}
     >
+      <div className={styles.count__title}>
+        <h1>Count {todoList.length}</h1>
+        <h1>Completed out of {todoList.length}</h1>
+      </div>
       <AnimatePresence>
         {filteredTodoList && filteredTodoList.length > 0 ? (
           filteredTodoList.map((todo, id) => {

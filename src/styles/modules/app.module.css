@@ -22,6 +22,14 @@
   }
 }
 
+.count__title {
+  display: flex;
+  justify-content: space-between;
+  color: var(--primaryPurple);
+  font-size: 0.9em;
+  margin: 1em auto;
+}
+
 .emptyText {
   font-size: 1.6rem;
   font-weight: 500;
