@@ -1,33 +1,67 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../../styles/modules/modal.module.scss";
 import { MdOutlineClose } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import style from "../../styles/modules/button.module.scss";
-import { addTodo } from "../../Redux/slices/todoSlice";
+import { addTodo, updateTodo } from "../../Redux/slices/todoSlice";
 import { v4 as uuid } from "uuid";
 import toast from "react-hot-toast";
-const TodoModal = ({ modalShow, setModalShow }) => {
+const TodoModal = ({ type, modalShow, setModalShow, todo }) => {
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState("incomplete");
   const [priority, setPriority] = useState("low");
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (type === "Update" && todo) {
+      setTitle(todo.title);
+      setStatus(todo.status);
+      setPriority(todo.priority);
+    } else {
+      setTitle("");
+      setStatus("incomplete");
+      setPriority("low");
+    }
+  }, [type, todo, modalShow]);
   const handleSubmit = e => {
     e.preventDefault();
+    if (title === "") {
+      toast.error("Please enter a title");
+      return;
+    }
     if (title && status && priority) {
-      dispatch(
-        addTodo({
-          id: uuid(),
-          title,
-          status,
-          priority,
-          time: new Date().toLocaleString(),
-        })
-      );
-      toast.success("Task Added successfully");
+      if (type === "Task") {
+        dispatch(
+          addTodo({
+            id: uuid(),
+            title,
+            status,
+            priority,
+            time: new Date().toLocaleString(),
+          })
+        );
+        toast.success("Task Added successfully");
+      }
+      if (type === "Update") {
+        if (
+          todo.title !== title ||
+          todo.status !== status ||
+          todo.priority !== priority
+        ) {
+          dispatch(
+            updateTodo({
+              ...todo,
+              title,
+              status,
+              priority,
+              time: new Date().toLocaleString(),
+            })
+          );
+          toast.success("Task Updated successfully");
+          setModalShow(false);
+        }
+      }
       setModalShow(false);
-    } else {
-      toast.error("Please fill all the fields");
     }
   };
   return (
@@ -48,8 +82,11 @@ const TodoModal = ({ modalShow, setModalShow }) => {
             <MdOutlineClose />
           </div>
           <form className={styles.form} onSubmit={e => handleSubmit(e)}>
-            <h1 className={styles.formTitle}>Task Title</h1>
+            <h1 className={styles.formTitle}>
+              {type === "Update" ? "Update" : "Task"} Modal
+            </h1>
             <label htmlFor="title">
+              Title
               <input
                 type="text"
                 name="title"
@@ -92,7 +129,7 @@ const TodoModal = ({ modalShow, setModalShow }) => {
                 type="submit"
                 className={`${style.button} ${style["button--primary"]}`}
               >
-                Add Task
+                {type === "Update" ? "Update" : "Add"} Task
               </button>
               <button
                 type="button"

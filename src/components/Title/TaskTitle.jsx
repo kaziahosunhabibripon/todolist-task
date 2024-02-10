@@ -23,7 +23,11 @@ const TaskTitle = () => {
         <Status />
       </div>
       <Task />
-      <TodoModal modalShow={modalShow} setModalShow={setModalShow} />
+      <TodoModal
+        type="Task"
+        modalShow={modalShow}
+        setModalShow={setModalShow}
+      />
     </div>
   );
 };
